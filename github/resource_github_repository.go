@@ -687,7 +687,7 @@ func resourceGithubRepositoryUpdate(d *schema.ResourceData, meta interface{}) er
 		log.Printf("[DEBUG] Updating repository visibility from %s to %s", o, n)
 		_, _, err = client.Repositories.Edit(ctx, owner, repoName, repoReq)
 		if err != nil {
-			if !strings.Contains(err.Error(), fmt.Sprintf("422 Visibility is already %s", n.(string))) {
+			if !strings.Contains(err.Error(), fmt.Sprintf("422 Visibility can't be changed by this user. and Visibility is already %s", n.(string))) {
 				return err
 			}
 		}
