@@ -580,13 +580,13 @@ func resourceGithubRepositoryCreate(d *schema.ResourceData, meta interface{}) er
 		}
 	}
 
-	pages := expandPages(d.Get("pages").([]interface{}))
-	if pages != nil {
-		_, _, err := client.Repositories.EnablePages(ctx, owner, repoName, pages)
-		if err != nil {
-			return err
-		}
-	}
+	//pages := expandPages(d.Get("pages").([]interface{}))
+	//if pages != nil {
+	//	_, _, err := client.Repositories.EnablePages(ctx, owner, repoName, pages)
+	//	if err != nil {
+	//		return err
+	//	}
+	//}
 
 	return resourceGithubRepositoryUpdate(d, meta)
 }
@@ -655,15 +655,15 @@ func resourceGithubRepositoryRead(d *schema.ResourceData, meta interface{}) erro
 		d.Set("squash_merge_commit_title", repo.GetSquashMergeCommitTitle())
 	}
 
-	if repo.GetHasPages() {
-		pages, _, err := client.Repositories.GetPagesInfo(ctx, owner, repoName)
-		if err != nil {
-			return err
-		}
-		if err := d.Set("pages", flattenPages(pages)); err != nil {
-			return fmt.Errorf("error setting pages: %w", err)
-		}
-	}
+	//if repo.GetHasPages() {
+	//	pages, _, err := client.Repositories.GetPagesInfo(ctx, owner, repoName)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	if err := d.Set("pages", flattenPages(pages)); err != nil {
+	//		return fmt.Errorf("error setting pages: %w", err)
+	//	}
+	//}
 
 	if repo.TemplateRepository != nil {
 		d.Set("template", []interface{}{
@@ -722,29 +722,29 @@ func resourceGithubRepositoryUpdate(d *schema.ResourceData, meta interface{}) er
 	}
 	d.SetId(*repo.Name)
 
-	if d.HasChange("pages") && !d.IsNewResource() {
-		opts := expandPagesUpdate(d.Get("pages").([]interface{}))
-		if opts != nil {
-			pages, res, err := client.Repositories.GetPagesInfo(ctx, owner, repoName)
-			if res.StatusCode != http.StatusNotFound && err != nil {
-				return err
-			}
+	//if d.HasChange("pages") && !d.IsNewResource() {
+	//	opts := expandPagesUpdate(d.Get("pages").([]interface{}))
+	//	if opts != nil {
+	//		pages, res, err := client.Repositories.GetPagesInfo(ctx, owner, repoName)
+	//		if res.StatusCode != http.StatusNotFound && err != nil {
+	//			return err
+	//		}
 
-			if pages == nil {
-				_, _, err = client.Repositories.EnablePages(ctx, owner, repoName, &github.Pages{Source: opts.Source, BuildType: opts.BuildType})
-			} else {
-				_, err = client.Repositories.UpdatePages(ctx, owner, repoName, opts)
-			}
-			if err != nil {
-				return err
-			}
-		} else {
-			_, err := client.Repositories.DisablePages(ctx, owner, repoName)
-			if err != nil {
-				return err
-			}
-		}
-	}
+	//		if pages == nil {
+	//			_, _, err = client.Repositories.EnablePages(ctx, owner, repoName, &github.Pages{Source: opts.Source, BuildType: opts.BuildType})
+	//		} else {
+	//			_, err = client.Repositories.UpdatePages(ctx, owner, repoName, opts)
+	//		}
+	//		if err != nil {
+	//			return err
+	//		}
+	//	} else {
+	//		_, err := client.Repositories.DisablePages(ctx, owner, repoName)
+	//		if err != nil {
+	//			return err
+	//		}
+	//	}
+	//}
 
 	if d.HasChange("topics") {
 		topics := repoReq.Topics
